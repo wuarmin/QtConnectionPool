@@ -2,12 +2,12 @@
 
 #include "databaseconnectionpool.h"
 
-DatabaseConnectionPool::DatabaseConnectionPool(const QSettings& settings, QObject* parent)
+DatabaseConnectionPool::DatabaseConnectionPool(const PoolConfig &config, QObject* parent)
     : QObject(parent),
-      settings(settings)
+      config(config)
 {
-    this->cleanUpTimer.start(this->settings.value("cleanUpInterval", 10000).toInt());
-    connect(&cleanUpTimer, SIGNAL(timeout()), SLOT(checkPool()));
+    this->checkTimer.start(this->config.checkInterval);
+    connect(&checkTimer, SIGNAL(timeout()), SLOT(checkPool()));
 
     this->initPool();
 }
@@ -21,7 +21,7 @@ DatabaseConnectionPool::~DatabaseConnectionPool()
 
 void DatabaseConnectionPool::initPool()
 {
-    const int minConnections =  this->settings.value("minConnections", 3).toInt();
+    const int minConnections =  this->config.minConnections;
 
     for(int i = 0; i < minConnections; ++i) {
         this->createNewConnection();
@@ -42,7 +42,7 @@ DatabaseConnection* DatabaseConnectionPool::getConnection()
     }
 
     if(!freshConnection) {
-        const int maxConnections = this->settings.value("maxConnections", 5).toInt();
+        const int maxConnections = this->config.maxConnections;
         if(this->pool.count() < maxConnections) {
             freshConnection = this->createNewConnection();
             freshConnection->setInUse();
@@ -55,7 +55,7 @@ DatabaseConnection* DatabaseConnectionPool::getConnection()
 
 DatabaseConnection* DatabaseConnectionPool::createNewConnection()
 {
-    DatabaseConnection* freshConnection = new DatabaseConnection(this->settings);
+    DatabaseConnection* freshConnection = new DatabaseConnection(this->config.dbConfig);
     pool.append(freshConnection);
     return freshConnection;
 }
@@ -64,8 +64,8 @@ void DatabaseConnectionPool::checkPool()
 {
     qDebug("DatabaseConnectionPool: pool size is now %i", pool.size());
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
-    const qint64 connectionLifePeriod = this->settings.value("connectionLifePeriod", 1).toInt();
-    const int maxConnections = this->settings.value("maxConnections", 5).toInt();
+    const qint64 connectionLifePeriod = this->config.connectionLifePeriod;
+    const int maxConnections = this->config.maxConnections;
     int excessCounter = 0;
     this->mutex.lock();
     foreach(DatabaseConnection* connection, pool) {

@@ -1,0 +1,16 @@
+{
+  "connectionPool": {
+    "checkInterval": 30000,
+    "minConnections": 2,
+    "maxConnections": 7,
+    "connectionLifePeriod": 600000,
+    "database": {
+        "driver": "OCI",
+        "host": "happy-host.com",
+        "port": 9999,
+        "database": "happy_db",
+        "user": "forrest_gump",
+        "password": "xxxyyy"
+    }
+  }
+}

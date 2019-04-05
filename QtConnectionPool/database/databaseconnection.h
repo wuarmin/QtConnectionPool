@@ -2,7 +2,8 @@
 #define DATABASECONNECTION_H
 
 #include <QSqlDatabase>
-#include <QSettings>
+
+#include "databaseconfig.h"
 
 class DatabaseConnection
 {
@@ -15,13 +16,13 @@ private:
     QSqlDatabase db;
 
 public:
-    DatabaseConnection(const QSettings &settings);
+    DatabaseConnection(const DatabaseConfig &config);
     ~DatabaseConnection();
 
     QSqlDatabase& database();
-    qint64 getCreationTime();
+    qint64 getCreationTime() const;
     void refresh();
-    bool isInUse();
+    bool isInUse() const;
     void setInUse();
     void setUnUsed();
 };

@@ -10,8 +10,12 @@ CONFIG(debug, debug|release) {
 
 HEADERS += \
     $$PWD/database/databaseconnectionpool.h \
-    $$PWD/database/databaseconnection.h
+    $$PWD/database/databaseconnection.h \
+    $$PWD/database/poolconfig.h \
+    $$PWD/database/databaseconfig.h
 
 SOURCES += \
     $$PWD/database/databaseconnectionpool.cpp \
-    $$PWD/database/databaseconnection.cpp
+    $$PWD/database/databaseconnection.cpp \
+    $$PWD/database/poolconfig.cpp \
+    $$PWD/database/databaseconfig.cpp

@@ -1,19 +1,20 @@
 #include <QUuid>
 #include <QDateTime>
+#include <QSqlError>
 
 #include "databaseconnection.h"
 
-DatabaseConnection::DatabaseConnection(const QSettings& settings)
+DatabaseConnection::DatabaseConnection(const DatabaseConfig& config)
     : inUse(false),
       dbId(QUuid::createUuid().toString()),
       creationTime(QDateTime::currentMSecsSinceEpoch())
 {    
-    this->db = QSqlDatabase::addDatabase("QPSQL", dbId);
-
-    this->db.setHostName(settings.value("host").toString());
-    this->db.setDatabaseName(settings.value("dwh").toString());
-    this->db.setUserName(settings.value("user").toString());
-    this->db.setPassword(settings.value("passwd").toString());
+    this->db = QSqlDatabase::addDatabase(config.driver, dbId);
+    this->db.setHostName(config.host);
+    this->db.setPort(config.port);
+    this->db.setDatabaseName(config.database);
+    this->db.setUserName(config.user);
+    this->db.setPassword(config.password);
 
     this->refresh();
 }
@@ -34,14 +35,18 @@ void DatabaseConnection::refresh()
         this->db.close();
     }
     this->db.open();
+
+    if(this->db.isOpenError()) {
+        qWarning("DatabaseConnection: Error at DatabaseConnection refresh(%s)", qPrintable(this->db.lastError().text()));
+    }
 }
 
-qint64 DatabaseConnection::getCreationTime()
+qint64 DatabaseConnection::getCreationTime() const
 {
     return this->creationTime;
 }
 
-bool DatabaseConnection::isInUse()
+bool DatabaseConnection::isInUse() const
 {
     return this->inUse;
 }
