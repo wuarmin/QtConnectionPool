@@ -34,5 +34,12 @@ The connection pool can be configured in a json file.
 - **checkInterval**: The used interval in milliseconds to clean up exceeded connections of refresh open connections. Defaults to `10000`
 - **minConnections**: The minimal count of open connections. Defaults to `1`
 - **maxConnections**: The maximal count of open connections. Defaults to `1`
-- **connectionLifePeriod**: The maximal life period in milliseconds of an open connection. Defaults to `300000
+- **connectionLifePeriod**: The maximal life period in milliseconds of an open connection. Defaults to `300000`
+- **driver**: The name of the db driver that should be used (see [Qt SQL Database Drivers](https://doc.qt.io/qt-5/sql-driver.html)). Defaults to: `QPSQL`
+- **host**: The connection's host name. **mandatory!**
+- **port**: The connection's port number. Defaults to `5432`
+- **database**: The connection's database name. **mandatory!**
+- **user**: The database user name. **mandatory!**
+- **password**: The database users password. **mandatory!**
+
 
