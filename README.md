@@ -1,2 +1,2 @@
 # QtConnectionPool
-Simple Database Connection Pool for Qt Apps
+Simple Database Connection Pool for Qt 5 Apps
