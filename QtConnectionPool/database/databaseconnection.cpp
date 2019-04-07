@@ -39,6 +39,9 @@ void DatabaseConnection::refresh()
     if(this->db.isOpenError()) {
         qWarning("DatabaseConnection: Error at DatabaseConnection refresh(%s)", qPrintable(this->db.lastError().text()));
     }
+    else {
+        this->creationTime = QDateTime::currentMSecsSinceEpoch();
+    }
 }
 
 qint64 DatabaseConnection::getCreationTime() const

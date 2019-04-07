@@ -12,10 +12,15 @@ HEADERS += \
     $$PWD/database/databaseconnectionpool.h \
     $$PWD/database/databaseconnection.h \
     $$PWD/database/poolconfig.h \
-    $$PWD/database/databaseconfig.h
+    $$PWD/database/databaseconfig.h \
+    $$PWD/database/connectionpool.h
 
 SOURCES += \
     $$PWD/database/databaseconnectionpool.cpp \
     $$PWD/database/databaseconnection.cpp \
     $$PWD/database/poolconfig.cpp \
-    $$PWD/database/databaseconfig.cpp
+    $$PWD/database/databaseconfig.cpp \
+    $$PWD/database/connectionpool.cpp
+
+DISTFILES += \
+    ../README.md

@@ -12,8 +12,9 @@ class DatabaseConnectionPool : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(DatabaseConnectionPool)
+
 private:
-    const PoolConfig& config;
+    const PoolConfig config;
     QTimer checkTimer;
     QMutex mutex;
     QList<DatabaseConnection*> pool;

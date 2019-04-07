@@ -9,10 +9,12 @@ TARGET = tests
 # Input
 HEADERS += \
     database/databaseconnectiontest.h \
-    database/poolconfigtest.h
+    database/poolconfigtest.h \
+    database/connectionpooltest.h
 SOURCES += main.cpp \
     database/databaseconnectiontest.cpp \
-    database/poolconfigtest.cpp
+    database/poolconfigtest.cpp \
+    database/connectionpooltest.cpp
 
 include(../QtConnectionPool/qtconnectionpool.pro)
 

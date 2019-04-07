@@ -1,4 +1,5 @@
 #include <QDateTime>
+#include <QDebug>
 
 #include "databaseconnectionpool.h"
 
