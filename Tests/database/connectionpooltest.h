@@ -13,6 +13,7 @@ class ConnectionPoolTest : public QObject
 private slots:
     void initTestCase();
     void testGetConnection();
+    void testAsynchronConnectionUsers();
     void cleanupTestCase();
 };
 

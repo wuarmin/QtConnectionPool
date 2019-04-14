@@ -11,5 +11,5 @@ int main(int argc, char *argv[])
     status |= QTest::qExec(new PoolConfigTest(), argc, argv);
     status |= QTest::qExec(new ConnectionPoolTest(), argc, argv);
 
-    return 0;
+    return status;
 }

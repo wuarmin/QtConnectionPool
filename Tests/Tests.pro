@@ -10,11 +10,13 @@ TARGET = tests
 HEADERS += \
     database/databaseconnectiontest.h \
     database/poolconfigtest.h \
-    database/connectionpooltest.h
+    database/connectionpooltest.h \
+    database/testHelpers/asyncconnectionuser.h
 SOURCES += main.cpp \
     database/databaseconnectiontest.cpp \
     database/poolconfigtest.cpp \
-    database/connectionpooltest.cpp
+    database/connectionpooltest.cpp \
+    database/testHelpers/asyncconnectionuser.cpp
 
 include(../QtConnectionPool/qtconnectionpool.pro)
 
@@ -22,4 +24,5 @@ include(../QtConnectionPool/qtconnectionpool.pro)
 DISTFILES += \
     etc/empty_config.json \
     etc/individual_config.json \
-    etc/test_db.json
+    etc/test_db.json \
+    etc/connection_pool_test.json
