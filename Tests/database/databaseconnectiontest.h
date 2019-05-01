@@ -4,19 +4,25 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-#include "database/databaseconnection.h"
+#include "database/connection.h"
 
 class DatabaseConnectionTest : public QObject
 {
     Q_OBJECT
 private:
-    DatabaseConnection* dbConnection;
+    QString configFilePath;
+    Connection connection;
+
+public:
+    DatabaseConnectionTest(QObject* parent);
 
 private slots:
     void initTestCase();
     void testConnection();
-    void testUsage();
-    void cleanupTestCase();
+    void testInUse();
+    void testComparison();
+    void testGetCreationTime();
+    void testRefresh();
 };
 
 #endif // DATABASECONNECTIONTEST_H

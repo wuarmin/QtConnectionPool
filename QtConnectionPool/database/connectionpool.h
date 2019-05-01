@@ -1,20 +1,20 @@
 #ifndef CONNECTIONPOOL_H
 #define CONNECTIONPOOL_H
 
-#include "databaseconnectionpool.h"
+#include "connectionpoolprivate.h"
 
 class ConnectionPool
 {
 private:
-    static DatabaseConnectionPool* pool;
-    DatabaseConnectionPool* poolRef;
+    static ConnectionPoolPrivate* pool;
+    ConnectionPoolPrivate* poolRef;
 
 public:
     ConnectionPool();
     ConnectionPool(const QString& configFilePath);
 
+    Connection getConnection();
     void destroy();
-    DatabaseConnection* getConnection();
 };
 
 #endif // CONNECTIONPOOL_H

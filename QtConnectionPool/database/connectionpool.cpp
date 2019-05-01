@@ -1,11 +1,11 @@
 #include "connectionpool.h"
 
-DatabaseConnectionPool* ConnectionPool::pool = 0;
+ConnectionPoolPrivate* ConnectionPool::pool = 0;
 
 ConnectionPool::ConnectionPool(const QString& configFilePath)
 {
     if (!pool) {
-        pool = new DatabaseConnectionPool(configFilePath, 0);
+        pool = new ConnectionPoolPrivate(configFilePath, 0);
     }
 }
 
@@ -23,7 +23,7 @@ void ConnectionPool::destroy()
     }
 }
 
-DatabaseConnection* ConnectionPool::getConnection()
+Connection ConnectionPool::getConnection()
 {
     return pool->getConnection();
 }

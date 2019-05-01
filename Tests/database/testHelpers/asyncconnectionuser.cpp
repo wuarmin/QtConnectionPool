@@ -7,29 +7,21 @@
 AsyncConnectionUser::AsyncConnectionUser(const QString& name)
     : QRunnable(),
       name(name),
-      success(false),
-      dbConnection(0)
+      success(false)
 {
     this->setAutoDelete(false);
 }
 
-AsyncConnectionUser::~AsyncConnectionUser()
-{
-    if (this->dbConnection) {
-        this->dbConnection->setUnUsed();
-    }
-}
-
 void AsyncConnectionUser::run()
 {
-    this->dbConnection =  ConnectionPool().getConnection();
-    if (!this->dbConnection) {
+    this->dbConnection = ConnectionPool().getConnection();
+    if (!this->dbConnection.database().isOpen()) {
         this->result = QString("%1: failed")
                 .arg(this->name);
         return;
     }
 
-    QSqlQuery query(this->dbConnection->database());
+    QSqlQuery query(this->dbConnection.database());
     this->success = query.exec("select 'it works'");
 
     query.next();

@@ -9,18 +9,22 @@ CONFIG(debug, debug|release) {
 }
 
 HEADERS += \
-    $$PWD/database/databaseconnectionpool.h \
+    $$PWD/database/connectionpoolprivate.h \
     $$PWD/database/databaseconnection.h \
     $$PWD/database/poolconfig.h \
     $$PWD/database/databaseconfig.h \
-    $$PWD/database/connectionpool.h
+    $$PWD/database/connectionpool.h \
+    $$PWD/database/connectionprivate.h \
+    $$PWD/database/connection.h
 
 SOURCES += \
-    $$PWD/database/databaseconnectionpool.cpp \
+    $$PWD/database/connectionpoolprivate.cpp \
     $$PWD/database/databaseconnection.cpp \
     $$PWD/database/poolconfig.cpp \
     $$PWD/database/databaseconfig.cpp \
-    $$PWD/database/connectionpool.cpp
+    $$PWD/database/connectionpool.cpp \
+    $$PWD/database/connectionprivate.cpp \
+    $$PWD/database/connection.cpp
 
 DISTFILES += \
     ../README.md

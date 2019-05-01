@@ -3,7 +3,7 @@
 
 #include <QRunnable>
 
-#include "database/databaseconnection.h"
+#include "database/connection.h"
 
 class AsyncConnectionUser : public QRunnable
 {
@@ -11,11 +11,10 @@ private:
     QString name;
     QString result;
     bool success;
-    DatabaseConnection* dbConnection;
+    Connection dbConnection;
 
 public:
     AsyncConnectionUser(const QString& name);
-    ~AsyncConnectionUser();
 
     void run();
 
