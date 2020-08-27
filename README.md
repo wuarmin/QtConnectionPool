@@ -31,7 +31,7 @@ The connection pool can be configured in a json file.
 
 #### Options
 
-- **checkInterval**: The used interval in milliseconds to clean up exceeded connections of refresh open connections. Defaults to `10000`
+- **checkInterval**: The used interval in milliseconds to clean up exceeded connections or to refresh open connections. Defaults to `10000`
 - **minConnections**: The minimal count of open connections. Defaults to `1`
 - **maxConnections**: The maximal count of open connections. Defaults to `1`
 - **connectionLifePeriod**: The maximal life period in milliseconds of an open connection. Defaults to `300000`
