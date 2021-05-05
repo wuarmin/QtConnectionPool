@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-#include "database/databaseconnection.h"
-
 class ConnectionPoolTest : public QObject
 {
     Q_OBJECT
@@ -14,6 +12,7 @@ private slots:
     void initTestCase();
     void testGetConnection();
     void testAsynchronConnectionUsers();
+    void testCheckConnectionPool();
     void cleanupTestCase();
 };
 

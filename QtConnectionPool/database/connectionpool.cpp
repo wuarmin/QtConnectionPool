@@ -3,11 +3,16 @@
 ConnectionPoolPrivate* ConnectionPool::pool = 0;
 
 ConnectionPool::ConnectionPool(const QString& configFilePath)
+: ConnectionPool(PoolConfig(configFilePath))
+{}
+
+ConnectionPool::ConnectionPool(const PoolConfig& poolConfig)
 {
     if (!pool) {
-        pool = new ConnectionPoolPrivate(configFilePath, 0);
+        pool = new ConnectionPoolPrivate(poolConfig, nullptr);
     }
 }
+
 
 ConnectionPool::ConnectionPool()
 {
@@ -23,7 +28,7 @@ void ConnectionPool::destroy()
     }
 }
 
-Connection ConnectionPool::getConnection()
+Connection ConnectionPool::getConnection(uint64_t waitTimeoutInMs)
 {
-    return pool->getConnection();
+    return pool->getConnection(waitTimeoutInMs);
 }

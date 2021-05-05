@@ -17,7 +17,7 @@ public:
     DatabaseConfig dbConfig;
 
 public:
-    PoolConfig(const QString &configFilePath);
+    explicit PoolConfig(const QString &configFilePath);
 
 private:
     QJsonDocument readConfigFile(const QString& configFilePath);

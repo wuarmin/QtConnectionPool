@@ -12,13 +12,14 @@ class ConnectionPrivate
 private:
     int refCount;
     bool inUse;
+    bool valid;
     QString dbId;
     qint64 creationTime;
     qint64 lastUseTime;
     QSqlDatabase db;
 
 public:
-    ConnectionPrivate(const DatabaseConfig &config);
+    explicit ConnectionPrivate(const DatabaseConfig &config);
     ~ConnectionPrivate();
 
     QSqlDatabase& database();
@@ -28,6 +29,7 @@ public:
     void use();
     void unUse();
     bool isInUse() const;
+    bool isValid() const;
     int getRefCount();
     void incrementRefCount();
     void decrementRefCount();

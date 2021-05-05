@@ -1,4 +1,5 @@
 #include <QDateTime>
+#include <QThread>
 #include <QMutableListIterator>
 
 #include "connectionpoolprivate.h"
@@ -22,7 +23,7 @@ void ConnectionPoolPrivate::initPool()
     }
 }
 
-Connection ConnectionPoolPrivate::getConnection()
+Connection ConnectionPoolPrivate::getConnection(uint64_t waitTimeoutInMs)
 {
     this->mutex.lock();
 
@@ -43,8 +44,23 @@ Connection ConnectionPoolPrivate::getConnection()
         this->mutex.unlock();
         return newConnection;
     }
-
     this->mutex.unlock();
+
+    //else we need to wait a thread has finish to have a working connection
+    if(waitTimeoutInMs > 0){
+        const qint64 startWait = QDateTime::currentMSecsSinceEpoch();
+        while(1){
+            auto con = getConnection(0);
+            if(con.isValid()){
+                return con;
+            }
+            if( (QDateTime::currentMSecsSinceEpoch() - startWait) > waitTimeoutInMs ){ //timeout expired
+                break;
+            }
+            QThread::yieldCurrentThread();
+        }
+    }
+
     return Connection();
 }
 

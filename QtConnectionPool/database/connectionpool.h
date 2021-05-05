@@ -3,6 +3,8 @@
 
 #include "connectionpoolprivate.h"
 
+class PoolConfig;
+
 class ConnectionPool
 {
 private:
@@ -11,9 +13,10 @@ private:
 
 public:
     ConnectionPool();
-    ConnectionPool(const QString& configFilePath);
+    explicit ConnectionPool(const QString& configFilePath);
+    explicit ConnectionPool(const PoolConfig& poolConfig);
 
-    Connection getConnection();
+    Connection getConnection(uint64_t waitTimeoutInMs=0);
     void destroy();
 };
 

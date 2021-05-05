@@ -2,7 +2,6 @@
 #include <QThread>
 
 #include "databaseconnectiontest.h"
-#include "database/connection.h"
 #include "database/poolconfig.h"
 
 DatabaseConnectionTest::DatabaseConnectionTest(QObject* parent) :

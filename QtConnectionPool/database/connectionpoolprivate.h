@@ -5,7 +5,6 @@
 #include <QTimer>
 #include <QMutex>
 
-#include "databaseconnection.h"
 #include "connection.h"
 #include "poolconfig.h"
 
@@ -21,9 +20,9 @@ private:
     QList<Connection> connectionPool;
 
 public:
-    explicit ConnectionPoolPrivate(const PoolConfig &config, QObject *parent);
+    explicit ConnectionPoolPrivate(const PoolConfig &config, QObject* parent);
 
-    Connection getConnection();
+    Connection getConnection(uint64_t waitTimeoutInMs=0);
 
 private:
     void initPool();

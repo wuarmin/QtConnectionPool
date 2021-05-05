@@ -76,6 +76,15 @@ bool Connection::isInUse() const
     return databaseConnection->isInUse();
 }
 
+bool Connection::isValid() const
+{
+    if (!this->databaseConnection) {
+        return false;
+    }
+
+    return databaseConnection->isValid();
+}
+
 void Connection::refresh()
 {
     if (!this->databaseConnection) {

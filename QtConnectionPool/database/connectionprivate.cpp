@@ -3,9 +3,11 @@
 #include <QSqlError>
 
 #include "connectionprivate.h"
-    
+
 ConnectionPrivate::ConnectionPrivate(const DatabaseConfig& config)
     : refCount(0)
+    , inUse(false)
+    , valid(false)
     , dbId(QUuid::createUuid().toString())
     , creationTime(QDateTime::currentMSecsSinceEpoch())
     , lastUseTime(0)
@@ -33,6 +35,7 @@ QSqlDatabase &ConnectionPrivate::database()
 
 void ConnectionPrivate::refresh()
 {
+    valid = false;
     if(this->db.isOpen()) {
         this->db.close();
     }
@@ -42,6 +45,7 @@ void ConnectionPrivate::refresh()
         qWarning("DatabaseConnection: Error at DatabaseConnection refresh(%s)", qPrintable(this->db.lastError().text()));
     }
     else {
+        valid = true;
         this->creationTime = QDateTime::currentMSecsSinceEpoch();
     }
 }
@@ -75,6 +79,11 @@ void ConnectionPrivate::unUse()
 bool ConnectionPrivate::isInUse() const
 {
     return this->inUse;
+}
+
+bool ConnectionPrivate::isValid() const
+{
+    return this->valid;
 }
 
 void ConnectionPrivate::incrementRefCount()

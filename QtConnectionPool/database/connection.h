@@ -12,7 +12,7 @@ private:
 
 public:
     Connection();
-    Connection(const DatabaseConfig& config);
+    explicit Connection(const DatabaseConfig& config);
     Connection(const Connection& other);
     ~Connection();
 
@@ -22,6 +22,8 @@ public:
     QSqlDatabase database();
     void use();
     bool isInUse() const;
+    bool isValid() const;
+
     qint64 getCreationTime() const;
     qint64 getLastUseTime() const;
     void refresh();
