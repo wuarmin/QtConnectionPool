@@ -1,4 +1,4 @@
-TEMPLATE = lib
+#TEMPLATE = lib
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 

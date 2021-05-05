@@ -3,11 +3,13 @@
 #include <QSqlError>
 
 #include "connectionprivate.h"
-
+    
 ConnectionPrivate::ConnectionPrivate(const DatabaseConfig& config)
-    : refCount(0),
-      dbId(QUuid::createUuid().toString()),
-      creationTime(QDateTime::currentMSecsSinceEpoch())
+    : refCount(0)
+    , dbId(QUuid::createUuid().toString())
+    , creationTime(QDateTime::currentMSecsSinceEpoch())
+    , lastUseTime(0)
+    , db()
 {
     this->db = QSqlDatabase::addDatabase(config.driver, dbId);
     this->db.setHostName(config.host);
@@ -49,6 +51,11 @@ qint64 ConnectionPrivate::getCreationTime() const
     return this->creationTime;
 }
 
+qint64 ConnectionPrivate::getLastUseTime() const
+{
+    return this->lastUseTime;
+}
+
 int ConnectionPrivate::getRefCount()
 {
     return this->refCount;
@@ -57,6 +64,7 @@ int ConnectionPrivate::getRefCount()
 void ConnectionPrivate::use()
 {
     this->inUse = true;
+    this->lastUseTime = QDateTime::currentMSecsSinceEpoch();
 }
 
 void ConnectionPrivate::unUse()

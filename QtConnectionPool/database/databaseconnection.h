@@ -13,6 +13,7 @@ private:
     bool inUse;
     QString dbId;
     qint64 creationTime;
+    qint64 lastUseTime;
     QSqlDatabase db;
 
 public:
@@ -21,6 +22,7 @@ public:
 
     QSqlDatabase& database();
     qint64 getCreationTime() const;
+    qint64 getLastUseTime() const;
     void refresh();
     bool isInUse() const;
     void setInUse();

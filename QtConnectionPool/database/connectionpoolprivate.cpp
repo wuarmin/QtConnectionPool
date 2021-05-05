@@ -55,10 +55,12 @@ Connection ConnectionPoolPrivate::createNewConnection()
 
 void ConnectionPoolPrivate::checkConnectionPool()
 {
-    qDebug("ConnectionPoolPrivate: pool size is now %i", connectionPool.size());
+    qDebug("Starting checkConnectionPool, ConnectionPoolPrivate: pool size is now %i", connectionPool.size());
     const qint64 now = QDateTime::currentMSecsSinceEpoch();
     const qint64 connectionLifePeriod = this->config.connectionLifePeriod;
-    const int maxConnections = this->config.maxConnections;
+    const qint64 inactivityPeriod = this->config.inactivityPeriod;
+    const int minConnections = this->config.minConnections;
+    
     int excessCounter = 0;
     this->mutex.lock();
 
@@ -66,9 +68,11 @@ void ConnectionPoolPrivate::checkConnectionPool()
     while (connectionsIterator.hasNext()) {
         Connection& connection = connectionsIterator.next();
         if (!connection.isInUse()) {
-            if (++excessCounter > maxConnections) {
-                connectionPool.removeOne(connection);
-                qDebug("ConnectionPoolPrivate: Unused Connection removed, pool size is now %i", connectionPool.size());
+            if (++excessCounter > minConnections) {
+                if( (now-connection.getLastUseTime()) > inactivityPeriod) {
+                    qDebug("Removing inactive connection id="); //show ID
+                    connectionPool.removeOne(connection);
+                }
                 break;
             }
             else if ((now-connection.getCreationTime()) > connectionLifePeriod) {
@@ -76,5 +80,6 @@ void ConnectionPoolPrivate::checkConnectionPool()
             }
         }
     }
+    qDebug("End checkConnectionPool, ConnectionPoolPrivate: Unused Connection removed, pool size is now %i", connectionPool.size());
     this->mutex.unlock();
 }

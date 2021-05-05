@@ -23,6 +23,7 @@ public:
     void use();
     bool isInUse() const;
     qint64 getCreationTime() const;
+    qint64 getLastUseTime() const;
     void refresh();
 };
 

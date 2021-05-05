@@ -93,3 +93,12 @@ qint64 Connection::getCreationTime() const
 
     return databaseConnection->getCreationTime();
 }
+
+qint64 Connection::getLastUseTime() const
+{
+    if (!this->databaseConnection) {
+        return 0;
+    }
+
+    return databaseConnection->getLastUseTime();
+}

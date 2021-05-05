@@ -2,8 +2,14 @@
 #include <QJsonObject>
 
 #include "poolconfig.h"
-
+    
 PoolConfig::PoolConfig(const QString& configFilePath)
+: checkInterval(0)
+, minConnections(0)
+, maxConnections(0)
+, connectionLifePeriod(0)
+, inactivityPeriod(0)
+, dbConfig()
 {
     QJsonDocument jsonConfig = readConfigFile(configFilePath);
     readJsonConfig(jsonConfig);
@@ -36,5 +42,6 @@ void PoolConfig::readJsonConfig(const QJsonDocument &jsonConfig)
     this->minConnections = connectionPoolConfig.value("minConnections", 1).toInt();
     this->maxConnections = connectionPoolConfig.value("maxConnections", 3).toInt();
     this->connectionLifePeriod = connectionPoolConfig.value("connectionLifePeriod", 300000).toInt();
+    this->inactivityPeriod = connectionPoolConfig.value("inactivityPeriod", 600000).toInt(); //temps apres lequel on drop la co
     this->dbConfig = DatabaseConfig(connectionPoolConfig.value("database").toMap());
 }

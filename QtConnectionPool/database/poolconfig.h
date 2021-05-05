@@ -13,6 +13,7 @@ public:
     int minConnections;
     int maxConnections;
     int connectionLifePeriod;
+    int inactivityPeriod;
     DatabaseConfig dbConfig;
 
 public:

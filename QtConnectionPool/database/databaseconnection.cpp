@@ -5,9 +5,10 @@
 #include "databaseconnection.h"
 
 DatabaseConnection::DatabaseConnection(const DatabaseConfig& config)
-    : inUse(false),
-      dbId(QUuid::createUuid().toString()),
-      creationTime(QDateTime::currentMSecsSinceEpoch())
+    : inUse(false)
+    , dbId(QUuid::createUuid().toString())
+    , creationTime(QDateTime::currentMSecsSinceEpoch())
+    , lastUseTime(0)
 {    
     this->db = QSqlDatabase::addDatabase(config.driver, dbId);
     this->db.setHostName(config.host);
@@ -49,6 +50,11 @@ qint64 DatabaseConnection::getCreationTime() const
     return this->creationTime;
 }
 
+qint64 DatabaseConnection::getLastUseTime() const
+{
+    return this->lastUseTime;
+}
+
 bool DatabaseConnection::isInUse() const
 {
     return this->inUse;
@@ -57,6 +63,7 @@ bool DatabaseConnection::isInUse() const
 void DatabaseConnection::setInUse()
 {
     this->inUse = true;
+    this->lastUseTime = QDateTime::currentMSecsSinceEpoch();
 }
 
 void DatabaseConnection::setUnUsed()
