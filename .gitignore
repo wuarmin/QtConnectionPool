@@ -2,4 +2,3 @@ build/
 build-*/
 *~
 *.user*
-test_db.json

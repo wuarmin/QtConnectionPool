@@ -1,0 +1,17 @@
+{
+  "connectionPool": {
+    "checkInterval": 30000,
+    "minConnections": 2,
+    "maxConnections": 5,
+    "connectionLifePeriod": 300000,
+    "inactivityPeriod": 600000,
+    "database": {
+        "driver": "QOCI",
+        "host": "localhost",
+        "port": 1521,
+        "database": "xe",
+        "user": "system",
+        "password": "oracle"
+    }
+  }
+}

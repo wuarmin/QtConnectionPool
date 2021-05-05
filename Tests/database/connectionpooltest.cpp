@@ -12,6 +12,7 @@ void ConnectionPoolTest::initTestCase()
 
 void ConnectionPoolTest::testGetConnection()
 {
+	//this expect test_db.json.maxCon = 5
     Connection con1 = ConnectionPool().getConnection();
     Connection con2 = ConnectionPool().getConnection();
     Connection con3 = ConnectionPool().getConnection();
@@ -34,6 +35,7 @@ void ConnectionPoolTest::testGetConnection()
 
 void ConnectionPoolTest::testAsynchronConnectionUsers()
 {
+	//this expect test_db.json.maxCon = 5
     for (int i = 0; i < 1000; ++i) {
 
         QList<QSharedPointer<AsyncConnectionUser> > asyncConnectionUsers;

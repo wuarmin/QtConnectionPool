@@ -22,7 +22,7 @@ void AsyncConnectionUser::run()
     }
 
     QSqlQuery query(this->dbConnection.database());
-    this->success = query.exec("select 'it works'");
+    this->success = query.exec("select 'it works' from dual");
 
     query.next();
     QString queryResult = query.value(0).toString();

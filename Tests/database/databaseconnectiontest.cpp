@@ -20,7 +20,7 @@ void DatabaseConnectionTest::initTestCase()
 void DatabaseConnectionTest::testConnection()
 {
     QSqlQuery query(this->connection.database());
-    bool ok = query.exec("select 'it works'");
+    bool ok = query.exec("select 'it works' from dual");
     QCOMPARE(ok, true);
 
     query.next();
