@@ -12,6 +12,7 @@ private slots:
     void initTestCase();
     void testGetConnection();
     void testAsynchronConnectionUsers();
+    void testCheckGetConnectionWithWait();
     void testCheckConnectionPool();
     void cleanupTestCase();
 };

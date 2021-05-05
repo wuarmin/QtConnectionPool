@@ -5,6 +5,7 @@
 QT += testlib
 TEMPLATE = app
 TARGET = tests
+CONFIG += console
 
 # Input
 HEADERS += \

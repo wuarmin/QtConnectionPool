@@ -1,6 +1,8 @@
 #include "poolconfigtest.h"
 #include "database/poolconfig.h"
 
+using namespace QtConnectionPool;
+
 void PoolConfigTest::testDefaultValues()
 {
     QString configFilePath = QCoreApplication::applicationDirPath() + "/../Tests/etc/empty_config.json";

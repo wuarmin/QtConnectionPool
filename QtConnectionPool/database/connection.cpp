@@ -1,113 +1,104 @@
 #include "connection.h"
 
-Connection::Connection()
-    : databaseConnection(0)
-{
-}
+#include "connectionprivate.h"
+#include "databaseconfig.h"
 
-Connection::Connection(const DatabaseConfig &config)
-    : databaseConnection(new ConnectionPrivate(config))
-{
-}
-
-Connection::Connection(const Connection& other)
-    : databaseConnection(0)
-{
-    if (other.databaseConnection) {
-        this->databaseConnection = other.databaseConnection;
-        this->databaseConnection->incrementRefCount();
+namespace QtConnectionPool {
+    Connection::Connection()
+            : databaseConnection(0) {
     }
-}
 
-Connection::~Connection()
-{
-    if (this->databaseConnection) {
-        this->databaseConnection->decrementRefCount();
+    Connection::Connection(const DatabaseConfig &config)
+            : databaseConnection(new ConnectionPrivate(config)) {
+    }
 
-        const int refCount = this->databaseConnection->getRefCount();
-
-        if (refCount == 0) {
-            this->databaseConnection->unUse();
-        }
-        else if (refCount < 0) {
-            delete this->databaseConnection;
+    Connection::Connection(const Connection &other)
+            : databaseConnection(0) {
+        if (other.databaseConnection) {
+            this->databaseConnection = other.databaseConnection;
+            this->databaseConnection->incrementRefCount();
         }
     }
-}
 
-Connection& Connection::operator=(const Connection& other)
-{
-    if (other.databaseConnection) {
+    Connection::~Connection() {
         if (this->databaseConnection) {
             this->databaseConnection->decrementRefCount();
+
+            const int refCount = this->databaseConnection->getRefCount();
+
+            if (refCount == 0) {
+                this->databaseConnection->unUse();
+            } else if (refCount < 0) {
+                delete this->databaseConnection;
+            }
         }
-        this->databaseConnection = other.databaseConnection;
-        this->databaseConnection->incrementRefCount();
     }
 
-    return *this;
-}
+    Connection &Connection::operator=(const Connection &other) {
+        if (other.databaseConnection) {
+            if (this->databaseConnection) {
+                this->databaseConnection->decrementRefCount();
+            }
+            this->databaseConnection = other.databaseConnection;
+            this->databaseConnection->incrementRefCount();
+        }
 
-bool Connection::operator==(const Connection& other)
-{
-    return this->databaseConnection == other.databaseConnection;
-}
-
-QSqlDatabase Connection::database()
-{
-    if (!this->databaseConnection) {
-        return QSqlDatabase();
+        return *this;
     }
 
-    return this->databaseConnection->database();
-}
-
-void Connection::use()
-{
-    this->databaseConnection->use();
-}
-
-bool Connection::isInUse() const
-{
-    if (!this->databaseConnection) {
-        return false;
+    bool Connection::operator==(const Connection &other) {
+        return this->databaseConnection == other.databaseConnection;
     }
 
-    return databaseConnection->isInUse();
-}
+    QSqlDatabase Connection::database() {
+        if (!this->databaseConnection) {
+            return QSqlDatabase();
+        }
 
-bool Connection::isValid() const
-{
-    if (!this->databaseConnection) {
-        return false;
+        return this->databaseConnection->database();
     }
 
-    return databaseConnection->isValid();
-}
-
-void Connection::refresh()
-{
-    if (!this->databaseConnection) {
-        return;
+    void Connection::use() {
+        this->databaseConnection->use();
     }
 
-    return databaseConnection->refresh();
-}
+    bool Connection::isInUse() const {
+        if (!this->databaseConnection) {
+            return false;
+        }
 
-qint64 Connection::getCreationTime() const
-{
-    if (!this->databaseConnection) {
-        return 0;
+        return databaseConnection->isInUse();
     }
 
-    return databaseConnection->getCreationTime();
-}
+    bool Connection::isValid() const {
+        if (!this->databaseConnection) {
+            return false;
+        }
 
-qint64 Connection::getLastUseTime() const
-{
-    if (!this->databaseConnection) {
-        return 0;
+        return databaseConnection->isValid();
     }
 
-    return databaseConnection->getLastUseTime();
+    void Connection::refresh() {
+        if (!this->databaseConnection) {
+            return;
+        }
+
+        return databaseConnection->refresh();
+    }
+
+    qint64 Connection::getCreationTime() const {
+        if (!this->databaseConnection) {
+            return 0;
+        }
+
+        return databaseConnection->getCreationTime();
+    }
+
+    qint64 Connection::getLastUseTime() const {
+        if (!this->databaseConnection) {
+            return 0;
+        }
+
+        return databaseConnection->getLastUseTime();
+    }
 }

@@ -1,33 +1,38 @@
 #include <QThread>
 #include <QSqlQuery>
+#include <QVariant>
 
 #include "asyncconnectionuser.h"
 #include "database/connectionpool.h"
 
-AsyncConnectionUser::AsyncConnectionUser(const QString& name)
-    : QRunnable(),
-      name(name),
-      success(false)
-{
-    this->setAutoDelete(false);
-}
-
-void AsyncConnectionUser::run()
-{
-    this->dbConnection = ConnectionPool().getConnection();
-    if (!this->dbConnection.database().isOpen()) {
-        this->result = QString("%1: failed")
-                .arg(this->name);
-        return;
+namespace QtConnectionPool {
+    AsyncConnectionUser::AsyncConnectionUser(const QString &name, uint64_t waitTimeoutMS)
+    : QRunnable()
+    , name(name)
+    , result()
+    , success(false)
+    , dbConnection()
+    , waitTimeoutMS(waitTimeoutMS)
+    {
+        this->setAutoDelete(false);
     }
 
-    QSqlQuery query(this->dbConnection.database());
-    this->success = query.exec("select 'it works' from dual");
+    void AsyncConnectionUser::run() {
+        this->dbConnection = ConnectionPool().getConnection(waitTimeoutMS);
+        if (!this->dbConnection.database().isOpen()) {
+            this->result = QString("%1: failed")
+                    .arg(this->name);
+            return;
+        }
 
-    query.next();
-    QString queryResult = query.value(0).toString();
-    this->result = QString("%1: %2")
-            .arg(this->name)
-            .arg(queryResult);
+        QSqlQuery query(this->dbConnection.database());
+        this->success = query.exec("select 'it works' from dual");
 
+        query.next();
+        QString queryResult = query.value(0).toString();
+        this->result = QString("%1: %2")
+                .arg(this->name)
+                .arg(queryResult);
+
+    }
 }

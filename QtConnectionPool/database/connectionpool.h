@@ -1,23 +1,30 @@
 #ifndef CONNECTIONPOOL_H
 #define CONNECTIONPOOL_H
 
-#include "connectionpoolprivate.h"
+#include "connection.h"
 
-class PoolConfig;
+namespace QtConnectionPool {
+    class PoolConfig;
 
-class ConnectionPool
-{
-private:
-    static ConnectionPoolPrivate* pool;
-    ConnectionPoolPrivate* poolRef;
+    class ConnectionPoolPrivate;
 
-public:
-    ConnectionPool();
-    explicit ConnectionPool(const QString& configFilePath);
-    explicit ConnectionPool(const PoolConfig& poolConfig);
+    class ConnectionPool {
+    private:
+        static ConnectionPoolPrivate *pool;
 
-    Connection getConnection(uint64_t waitTimeoutInMs=0);
-    void destroy();
-};
+    public:
+        ConnectionPool();
+
+        explicit ConnectionPool(const QString &configFilePath);
+
+        explicit ConnectionPool(const PoolConfig &poolConfig);
+
+        Connection getConnection(uint64_t waitTimeoutInMs = 0);
+
+        int getNbCon() const;
+
+        void destroy();
+    };
+}
 
 #endif // CONNECTIONPOOL_H

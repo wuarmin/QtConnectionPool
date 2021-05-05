@@ -4,6 +4,8 @@
 #include "databaseconnectiontest.h"
 #include "database/poolconfig.h"
 
+using namespace QtConnectionPool;
+
 DatabaseConnectionTest::DatabaseConnectionTest(QObject* parent) :
     QObject(parent)
 {
