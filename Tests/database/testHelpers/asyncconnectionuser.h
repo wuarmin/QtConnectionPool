@@ -2,6 +2,7 @@
 #define ASYNCCONNECTIONUSER_H
 
 #include <QRunnable>
+#include <QSharedPointer>
 
 #include "database/connection.h"
 
@@ -11,11 +12,11 @@ namespace QtConnectionPool {
         QString name;
         QString result;
         bool success;
-        Connection dbConnection;
+        QSharedPointer<Connection> dbConnection;
         uint64_t waitTimeoutMS;
 
     public:
-        explicit AsyncConnectionUser(const QString &name, uint64_t waitTimeoutMS = 0);
+        explicit AsyncConnectionUser(const QString& name, uint64_t waitTimeoutMS = 0);
 
         void run();
 

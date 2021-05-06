@@ -8,9 +8,14 @@ class ConnectionPoolTest : public QObject
 {
     Q_OBJECT
 
+public:
+    struct Handler;
+    Handler* _dataHandler;
+
 private slots:
     void initTestCase();
     void testGetConnection();
+    void testNoUnBorrow();
     void testAsynchronConnectionUsers();
     void testCheckGetConnectionWithWait();
     void testCheckConnectionPool();

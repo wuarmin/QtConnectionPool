@@ -2,6 +2,7 @@
 #define CONNECTION_H
 
 #include <QSqlDatabase>
+#include <QSharedPointer>
 
 namespace QtConnectionPool {
     class ConnectionPrivate;
@@ -11,15 +12,12 @@ namespace QtConnectionPool {
     {
 
     private:
-        ConnectionPrivate* databaseConnection;
+        QSharedPointer<ConnectionPrivate> databaseConnection;
 
     public:
         Connection();
         explicit Connection(const DatabaseConfig& config);
-        Connection(const Connection& other);
-        ~Connection();
 
-        Connection& operator=(const Connection& other);
         bool operator==(const Connection& other);
 
         QSqlDatabase database();

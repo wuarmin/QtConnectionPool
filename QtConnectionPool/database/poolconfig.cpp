@@ -4,13 +4,17 @@
 #include "poolconfig.h"
 
 namespace QtConnectionPool {
-    PoolConfig::PoolConfig(const QString& configFilePath)
+    PoolConfig::PoolConfig()
     : checkInterval(0)
     , minConnections(0)
     , maxConnections(0)
     , connectionLifePeriod(0)
     , inactivityPeriod(0)
     , dbConfig() {
+    }
+
+    PoolConfig::PoolConfig(const QString& configFilePath)
+    : PoolConfig() {
         QJsonDocument jsonConfig = readConfigFile(configFilePath);
         readJsonConfig(jsonConfig);
     }

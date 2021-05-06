@@ -18,6 +18,7 @@ namespace QtConnectionPool {
         DatabaseConfig dbConfig;
 
     public:
+        PoolConfig();
         explicit PoolConfig(const QString& configFilePath);
 
     private:

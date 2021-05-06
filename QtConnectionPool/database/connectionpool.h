@@ -1,27 +1,38 @@
 #ifndef CONNECTIONPOOL_H
 #define CONNECTIONPOOL_H
 
-#include "connection.h"
+#include <QDateTime>
+#include <QDebug>
+#include <QMutableListIterator>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QObject>
+#include <QSharedPointer>
+#include <QThread>
+#include <QTimer>
+#include <QSharedPointer>
+
+#include "poolconfig.h"
+#include "poolStats.h"
 
 namespace QtConnectionPool {
     class PoolConfig;
-
+    class Connection;
     class ConnectionPoolPrivate;
 
     class ConnectionPool {
-    private:
-        static ConnectionPoolPrivate *pool;
+        static ConnectionPoolPrivate* pool;
 
     public:
         ConnectionPool();
 
-        explicit ConnectionPool(const QString &configFilePath);
+        explicit ConnectionPool(const QString& configFilePath);
+        explicit ConnectionPool(const PoolConfig& poolConfig);
 
-        explicit ConnectionPool(const PoolConfig &poolConfig);
+        QSharedPointer<Connection> getConnection(uint64_t waitTimeoutInMs = 0);
+        void unBorrowConnection(QSharedPointer<Connection> con);
 
-        Connection getConnection(uint64_t waitTimeoutInMs = 0);
-
-        int getNbCon() const;
+        PoolStats getPoolStats() const;
 
         void destroy();
     };

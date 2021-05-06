@@ -1,49 +1,121 @@
 #include "connection.h"
 
-#include "connectionprivate.h"
+#include <QDateTime>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QThread>
+#include <QUuid>
+
 #include "databaseconfig.h"
 
 namespace QtConnectionPool {
+    class ConnectionPrivate {
+        Q_DISABLE_COPY(ConnectionPrivate)
+
+    private:
+        bool inUse;
+        bool valid;
+        QString dbId;
+        qint64 creationTime;
+        qint64 lastUseTime;
+        QSqlDatabase db;
+
+    public:
+        explicit ConnectionPrivate(const DatabaseConfig& config);
+
+        QSqlDatabase &database();
+
+        qint64 getCreationTime() const;
+
+        qint64 getLastUseTime() const;
+
+        void refresh();
+
+        void use();
+
+        void unUse();
+
+        bool isInUse() const;
+
+        bool isValid() const;
+    };
+
+    ConnectionPrivate::ConnectionPrivate(const DatabaseConfig& config)
+    : inUse(false)
+    , valid(false)
+    , dbId(QUuid::createUuid().toString())
+    , creationTime(QDateTime::currentMSecsSinceEpoch())
+    , lastUseTime(0)
+    , db()
+    {
+        this->db = QSqlDatabase::addDatabase(config.driver, dbId);
+        this->db.setHostName(config.host);
+        this->db.setPort(config.port);
+        this->db.setDatabaseName(config.database);
+        this->db.setUserName(config.user);
+        this->db.setPassword(config.password);
+
+        valid = true;
+        this->refresh();
+    }
+
+    QSqlDatabase& ConnectionPrivate::database() {
+        return this->db;
+    }
+
+    void ConnectionPrivate::refresh() {
+        valid = false;
+        if (this->db.isOpen()) {
+            this->db.close();
+        }
+        this->db.open();
+
+        if (this->db.isOpenError()) {
+            qWarning("DatabaseConnection: Error at DatabaseConnection refresh(%s)",
+                     qPrintable(this->db.lastError().text()));
+        } else {
+            //qDebug("ConnectionPrivate::refresh opened db successfully");
+            valid = true;
+            this->creationTime = QDateTime::currentMSecsSinceEpoch();
+        }
+    }
+
+    qint64 ConnectionPrivate::getCreationTime() const {
+        return this->creationTime;
+    }
+
+    qint64 ConnectionPrivate::getLastUseTime() const {
+        return this->lastUseTime;
+    }
+
+    void ConnectionPrivate::use() {
+        //qDebug("ConnectionPrivate reserved by threadID=%p",QThread::currentThreadId());
+        this->inUse = true;
+        this->lastUseTime = QDateTime::currentMSecsSinceEpoch();
+    }
+
+    void ConnectionPrivate::unUse() {
+        //qDebug("ConnectionPrivate release by threadID=%p",QThread::currentThreadId());
+        this->inUse = false;
+    }
+
+    bool ConnectionPrivate::isInUse() const {
+        return this->inUse;
+    }
+
+    bool ConnectionPrivate::isValid() const {
+        return this->valid;
+    }
+
+
     Connection::Connection()
-            : databaseConnection(0) {
+    : databaseConnection(0) {
     }
 
     Connection::Connection(const DatabaseConfig& config)
-            : databaseConnection(new ConnectionPrivate(config)) {
-    }
-
-    Connection::Connection(const Connection& other)
-            : databaseConnection(0) {
-        if (other.databaseConnection) {
-            this->databaseConnection = other.databaseConnection;
-            this->databaseConnection->incrementRefCount();
-        }
-    }
-
-    Connection::~Connection() {
-        if (this->databaseConnection) {
-            this->databaseConnection->decrementRefCount();
-
-            const int refCount = this->databaseConnection->getRefCount();
-
-            if (refCount == 0) {
-                this->databaseConnection->unUse();
-            } else if (refCount < 0) {
-                delete this->databaseConnection;
-            }
-        }
-    }
-
-    Connection &Connection::operator=(const Connection& other) {
-        if (other.databaseConnection) {
-            if (this->databaseConnection) {
-                this->databaseConnection->decrementRefCount();
-            }
-            this->databaseConnection = other.databaseConnection;
-            this->databaseConnection->incrementRefCount();
-        }
-
-        return *this;
+    : databaseConnection(new ConnectionPrivate(config)) {
+        qDebug("new databaseConnection");
     }
 
     bool Connection::operator==(const Connection& other) {
@@ -54,11 +126,13 @@ namespace QtConnectionPool {
         if (!this->databaseConnection) {
             return QSqlDatabase();
         }
-
         return this->databaseConnection->database();
     }
 
     void Connection::use() {
+        if (!this->databaseConnection) {
+            return;
+        }
         this->databaseConnection->use();
     }
 

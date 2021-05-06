@@ -1,16 +1,33 @@
 #include "connectionpool.h"
 
+#include <QDateTime>
+#include <QDebug>
+#include <QMutableListIterator>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QObject>
+#include <QSharedPointer>
+#include <QThread>
+#include <QTimer>
+
+#include "poolconfig.h"
+#include "connection.h"
 #include "connectionpoolprivate.h"
 
 namespace QtConnectionPool {
-    ConnectionPoolPrivate *ConnectionPool::pool = 0;
 
-    ConnectionPool::ConnectionPool(const QString &configFilePath)
-            : ConnectionPool(PoolConfig(configFilePath)) {}
+    ConnectionPoolPrivate* ConnectionPool::pool = 0;
+
+    ConnectionPool::ConnectionPool(const QString& configFilePath)
+    : ConnectionPool(PoolConfig(configFilePath))
+    {}
 
     ConnectionPool::ConnectionPool(const PoolConfig &poolConfig) {
         if (!pool) {
-            pool = new ConnectionPoolPrivate(poolConfig, nullptr);
+            ConnectionPoolPrivate::setupPool(poolConfig, nullptr);
+            pool = &ConnectionPoolPrivate::getInstance();
+        } else {
+            qWarning("ConnectionPool: already initialized, skipping configuration");
         }
     }
 
@@ -23,15 +40,19 @@ namespace QtConnectionPool {
 
     void ConnectionPool::destroy() {
         if (pool) {
-            delete pool;
+            pool->stop = true;
+            //delete pool;
         }
     }
 
-    Connection ConnectionPool::getConnection(uint64_t waitTimeoutInMs) {
+    QSharedPointer<Connection> ConnectionPool::getConnection(uint64_t waitTimeoutInMs) {
         return pool->getConnection(waitTimeoutInMs);
     }
+    void ConnectionPool::unBorrowConnection(QSharedPointer<Connection> con) {
+        pool->unBorrowConnection(con);
+    }
 
-    int ConnectionPool::getNbCon() const {
-        return pool->getNbCon();
+    PoolStats ConnectionPool::getPoolStats() const {
+        return pool->getPoolStats();
     }
 }

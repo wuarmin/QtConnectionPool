@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QTimer>
 #include <QMutex>
+#include <QSharedPointer>
 
 #include "connection.h"
 #include "poolconfig.h"
+#include "poolStats.h"
 
 namespace QtConnectionPool {
     class ConnectionPoolPrivate : public QObject {
@@ -14,26 +16,29 @@ namespace QtConnectionPool {
         Q_DISABLE_COPY(ConnectionPoolPrivate)
 
     private:
+        PoolStats stat;
         const PoolConfig config;
         QTimer checkTimer;
         mutable QMutex mutex;
-        QList <Connection> connectionPool;
+        QList<QSharedPointer<Connection>> connectionPool; //available
+
 
     public:
-        explicit ConnectionPoolPrivate(const PoolConfig &config, QObject *parent);
+        bool stop;
+        QSharedPointer<Connection> getConnection(uint64_t waitTimeoutInMs = 0);
+        void unBorrowConnection(QSharedPointer<Connection> con);
+        PoolStats getPoolStats() const;
 
-        Connection getConnection(uint64_t waitTimeoutInMs = 0);
-
-        int getNbCon() const;
+        static ConnectionPoolPrivate& getInstance();
+        static void setupPool(const PoolConfig &config, QObject *parent);
 
     private:
+        explicit ConnectionPoolPrivate(const PoolConfig &config, QObject *parent);
         void initPool();
+        QSharedPointer<Connection> createNewConnection();
 
-        Connection createNewConnection();
-
-    private
-        slots:
-                void checkConnectionPool();
+    private slots:
+        void checkConnectionPool();
     };
 }
 
