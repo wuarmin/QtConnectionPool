@@ -1,6 +1,7 @@
-#TEMPLATE = lib
+TEMPLATE = lib
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
+TARGET = qtconnectionpool
 
 QT += sql
 
@@ -27,3 +28,5 @@ SOURCES += \
 
 DISTFILES += \
     ../README.md
+
+DESTDIR = ../bin
