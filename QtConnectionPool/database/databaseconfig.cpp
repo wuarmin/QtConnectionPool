@@ -10,7 +10,7 @@ namespace QtConnectionPool {
     , password() {
     }
 
-    DatabaseConfig::DatabaseConfig(const QVariantMap &configMap) {
+    DatabaseConfig::DatabaseConfig(const QVariantMap& configMap) {
         this->readConfig(configMap);
     }
 

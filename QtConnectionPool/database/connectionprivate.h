@@ -19,7 +19,7 @@ namespace QtConnectionPool {
         QSqlDatabase db;
 
     public:
-        explicit ConnectionPrivate(const DatabaseConfig &config);
+        explicit ConnectionPrivate(const DatabaseConfig& config);
 
         ~ConnectionPrivate();
 

@@ -4,7 +4,7 @@
 #include "poolconfig.h"
 
 namespace QtConnectionPool {
-    PoolConfig::PoolConfig(const QString &configFilePath)
+    PoolConfig::PoolConfig(const QString& configFilePath)
     : checkInterval(0)
     , minConnections(0)
     , maxConnections(0)
@@ -15,7 +15,7 @@ namespace QtConnectionPool {
         readJsonConfig(jsonConfig);
     }
 
-    QJsonDocument PoolConfig::readConfigFile(const QString &configFilePath) {
+    QJsonDocument PoolConfig::readConfigFile(const QString& configFilePath) {
         QJsonDocument jsonConfig;
 
         QFile file(configFilePath);
@@ -31,7 +31,7 @@ namespace QtConnectionPool {
     }
 
 
-    void PoolConfig::readJsonConfig(const QJsonDocument &jsonConfig) {
+    void PoolConfig::readJsonConfig(const QJsonDocument& jsonConfig) {
         QVariantMap configMap = jsonConfig.object().toVariantMap();
         QVariantMap connectionPoolConfig = configMap.value("connectionPool", QVariantMap()).toMap();
 

@@ -3,19 +3,21 @@
 
 #include "databaseconnectiontest.h"
 #include "database/poolconfig.h"
+#include "testHelpers/PrgLog.h"
 
 using namespace QtConnectionPool;
 
 DatabaseConnectionTest::DatabaseConnectionTest(QObject* parent) :
     QObject(parent)
 {
-    this->configFilePath = QCoreApplication::applicationDirPath() + "/../Tests/etc/test_db.json";
+    this->configFilePath = QCoreApplication::applicationDirPath() + "/etc/test_db.json";
 }
 
 void DatabaseConnectionTest::initTestCase()
 {
     PoolConfig poolConfig(this->configFilePath);
     this->connection = Connection(poolConfig.dbConfig);
+    qInstallMessageHandler(PrgLog::qtMessageOutput);
 }
 
 void DatabaseConnectionTest::testConnection()

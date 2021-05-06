@@ -18,12 +18,12 @@ namespace QtConnectionPool {
         DatabaseConfig dbConfig;
 
     public:
-        explicit PoolConfig(const QString &configFilePath);
+        explicit PoolConfig(const QString& configFilePath);
 
     private:
-        QJsonDocument readConfigFile(const QString &configFilePath);
+        QJsonDocument readConfigFile(const QString& configFilePath);
 
-        void readJsonConfig(const QJsonDocument &jsonConfig);
+        void readJsonConfig(const QJsonDocument& jsonConfig);
     };
 }
 

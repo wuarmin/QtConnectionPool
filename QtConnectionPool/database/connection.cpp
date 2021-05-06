@@ -8,11 +8,11 @@ namespace QtConnectionPool {
             : databaseConnection(0) {
     }
 
-    Connection::Connection(const DatabaseConfig &config)
+    Connection::Connection(const DatabaseConfig& config)
             : databaseConnection(new ConnectionPrivate(config)) {
     }
 
-    Connection::Connection(const Connection &other)
+    Connection::Connection(const Connection& other)
             : databaseConnection(0) {
         if (other.databaseConnection) {
             this->databaseConnection = other.databaseConnection;
@@ -34,7 +34,7 @@ namespace QtConnectionPool {
         }
     }
 
-    Connection &Connection::operator=(const Connection &other) {
+    Connection &Connection::operator=(const Connection& other) {
         if (other.databaseConnection) {
             if (this->databaseConnection) {
                 this->databaseConnection->decrementRefCount();
@@ -46,7 +46,7 @@ namespace QtConnectionPool {
         return *this;
     }
 
-    bool Connection::operator==(const Connection &other) {
+    bool Connection::operator==(const Connection& other) {
         return this->databaseConnection == other.databaseConnection;
     }
 

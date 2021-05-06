@@ -1,11 +1,13 @@
 #include <QUuid>
 #include <QDateTime>
 #include <QSqlError>
+#include <QDebug>
+#include <QThread>
 
 #include "connectionprivate.h"
 
 namespace QtConnectionPool {
-    ConnectionPrivate::ConnectionPrivate(const DatabaseConfig &config)
+    ConnectionPrivate::ConnectionPrivate(const DatabaseConfig& config)
             : refCount(0)
             , inUse(false)
             , valid(false)
@@ -28,7 +30,7 @@ namespace QtConnectionPool {
         this->db.close();
     }
 
-    QSqlDatabase &ConnectionPrivate::database() {
+    QSqlDatabase& ConnectionPrivate::database() {
         return this->db;
     }
 
@@ -43,6 +45,7 @@ namespace QtConnectionPool {
             qWarning("DatabaseConnection: Error at DatabaseConnection refresh(%s)",
                      qPrintable(this->db.lastError().text()));
         } else {
+            qDebug("ConnectionPrivate::refresh opened db successfully");
             valid = true;
             this->creationTime = QDateTime::currentMSecsSinceEpoch();
         }
@@ -61,11 +64,13 @@ namespace QtConnectionPool {
     }
 
     void ConnectionPrivate::use() {
+        qDebug("ConnectionPrivate reserved by threadID=%p",QThread::currentThreadId());
         this->inUse = true;
         this->lastUseTime = QDateTime::currentMSecsSinceEpoch();
     }
 
     void ConnectionPrivate::unUse() {
+        qDebug("ConnectionPrivate release by threadID=%p",QThread::currentThreadId());
         this->inUse = false;
     }
 

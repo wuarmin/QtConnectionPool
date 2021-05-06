@@ -17,7 +17,7 @@ namespace QtConnectionPool {
     public:
         DatabaseConfig();
 
-        explicit DatabaseConfig(const QVariantMap &configMap);
+        explicit DatabaseConfig(const QVariantMap& configMap);
 
     private:
         void readConfig(const QVariantMap &configMap);
