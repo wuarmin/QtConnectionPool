@@ -14,9 +14,10 @@ namespace QtConnectionPool {
         bool success;
         QSharedPointer<Connection> dbConnection;
         uint64_t waitTimeoutMS;
+        uint64_t queryExecTimeMs;
 
     public:
-        explicit AsyncConnectionUser(const QString& name, uint64_t waitTimeoutMS = 0);
+        explicit AsyncConnectionUser(const QString& name, uint64_t waitTimeoutMS = 0, uint64_t queryExecTimeMs = 0);
 
         void run();
 

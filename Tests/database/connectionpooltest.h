@@ -14,8 +14,8 @@ public:
 
 private slots:
     void initTestCase();
-    void testGetConnection();
-    void testNoUnBorrow();
+    void testExplicitUnBorrow();
+    void testImplicitUnBorrow();
     void testAsynchronConnectionUsers();
     void testCheckGetConnectionWithWait();
     void testCheckConnectionPool();

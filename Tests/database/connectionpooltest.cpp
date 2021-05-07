@@ -31,7 +31,7 @@ void ConnectionPoolTest::initTestCase()
     _dataHandler = new Handler(conf);
 }
 
-void ConnectionPoolTest::testGetConnection()
+void ConnectionPoolTest::testExplicitUnBorrow()
 {
     //this expect test_db.json.maxCon = 5
     QSharedPointer<Connection> con1 = ConnectionPool().getConnection();
@@ -49,6 +49,11 @@ void ConnectionPoolTest::testGetConnection()
         QCOMPARE(con && con->isInUse(), true);
         QCOMPARE(con && con->database().isOpen(), true);
     }
+
+    PoolStats stats = ConnectionPool().getPoolStats();
+    QCOMPARE(stats._nbAvailable, 0);
+    QCOMPARE(stats._nbBorrowed, 5);
+
     QCOMPARE(con6 && con6->isInUse(), false);
     QCOMPARE(con6 && con6->database().isOpen(), false);
 
@@ -57,9 +62,12 @@ void ConnectionPoolTest::testGetConnection()
     while (validConnectionsIterator2.hasNext()) {
         ConnectionPool().unBorrowConnection(validConnectionsIterator2.next());
     }
+    PoolStats stats2 = ConnectionPool().getPoolStats();
+    QCOMPARE(stats2._nbAvailable, 5);
+    QCOMPARE(stats2._nbBorrowed, 0);
 }
 
-void ConnectionPoolTest::testNoUnBorrow()
+void ConnectionPoolTest::testImplicitUnBorrow()
 {
     //this expect test_db.json.maxCon = 5
 
@@ -95,16 +103,17 @@ void ConnectionPoolTest::testNoUnBorrow()
 
 void ConnectionPoolTest::testAsynchronConnectionUsers()
 {
-    for (int i = 0; i < 20; ++i) {
+    uint64_t queryExecTimeMs = 10; //query-execution will take at least 10ms
 
+    for (int i = 0; i < 20; ++i) {
         QList<QSharedPointer<AsyncConnectionUser> > asyncConnectionUsers;
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser1")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser2")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser3")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser4")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser5")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser6")));
-        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser7")));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser1", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser2", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser3", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser4", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser5", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser6", 0, queryExecTimeMs)));
+        asyncConnectionUsers.append(QSharedPointer<AsyncConnectionUser>(new AsyncConnectionUser("asyncUser7", 0, queryExecTimeMs)));
 
         QThreadPool* threadPool = new QThreadPool();
         threadPool->setMaxThreadCount(7);

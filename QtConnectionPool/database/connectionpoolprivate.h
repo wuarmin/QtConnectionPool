@@ -22,7 +22,6 @@ namespace QtConnectionPool {
         mutable QMutex mutex;
         QList<QSharedPointer<Connection>> connectionPool; //available
 
-
     public:
         bool stop;
         QSharedPointer<Connection> getConnection(uint64_t waitTimeoutInMs = 0);

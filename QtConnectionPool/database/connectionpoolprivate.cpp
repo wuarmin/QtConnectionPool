@@ -12,8 +12,11 @@ namespace QtConnectionPool {
         QObject* g_parent;
 
         static void unBorrowDeleteHandler(Connection* obj) {
-            //qDebug("Entering unBorrowDeleteHandler obj=%p",obj);
-            ConnectionPoolPrivate::getInstance().unBorrowConnection(QSharedPointer<Connection>(obj));
+            //qDebug("Entering unBorrowDeleteHandler obj=%p", obj);
+            ConnectionPoolPrivate& privatePoolInstance = ConnectionPoolPrivate::getInstance();
+            if (!privatePoolInstance.stop) {
+                privatePoolInstance.unBorrowConnection(QSharedPointer<Connection>(obj));
+            }
         }
     }
 
@@ -60,7 +63,7 @@ namespace QtConnectionPool {
 
     void ConnectionPoolPrivate::unBorrowConnection(QSharedPointer<Connection> con) {
         //qDebug("ConnectionPoolPrivate::unBorrowConnection received unborrow notification");
-        if(con){ //con->isValid()
+        if (!con.isNull()) {
             QMutexLocker locker(&mutex);
             this->connectionPool.push_back(con);
             ++stat._nbAvailable;

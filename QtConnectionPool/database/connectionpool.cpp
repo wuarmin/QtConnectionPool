@@ -30,7 +30,6 @@ namespace QtConnectionPool {
         }
     }
 
-
     ConnectionPool::ConnectionPool() {
         if (!pool) {
             qFatal("ConnectionPool: pool was not initialized");
@@ -40,7 +39,6 @@ namespace QtConnectionPool {
     void ConnectionPool::destroy() {
         if (pool) {
             pool->stop = true;
-            //delete pool;
         }
     }
 
