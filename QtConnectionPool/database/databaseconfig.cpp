@@ -1,20 +1,25 @@
 #include "databaseconfig.h"
 
-DatabaseConfig::DatabaseConfig()
-{
-}
+namespace QtConnectionPool {
+    DatabaseConfig::DatabaseConfig()
+    : driver()
+    , host()
+    , port(0)
+    , database()
+    , user()
+    , password() {
+    }
 
-DatabaseConfig::DatabaseConfig(const QVariantMap &configMap)
-{
-    this->readConfig(configMap);
-}
+    DatabaseConfig::DatabaseConfig(const QVariantMap& configMap) {
+        this->readConfig(configMap);
+    }
 
-void DatabaseConfig::readConfig(const QVariantMap &configMap)
-{
-    this->driver = configMap.value("driver", "QPSQL").toString();
-    this->host = configMap.value("host").toString();
-    this->port = configMap.value("port", 5432).toInt();
-    this->database = configMap.value("database").toString();
-    this->user = configMap.value("user").toString();
-    this->password = configMap.value("password").toString();
+    void DatabaseConfig::readConfig(const QVariantMap &configMap) {
+        this->driver = configMap.value("driver", "QPSQL").toString();
+        this->host = configMap.value("host").toString();
+        this->port = configMap.value("port", 5432).toInt();
+        this->database = configMap.value("database").toString();
+        this->user = configMap.value("user").toString();
+        this->password = configMap.value("password").toString();
+    }
 }

@@ -1,10 +1,17 @@
 #include "poolconfigtest.h"
 #include "database/poolconfig.h"
+#include "testHelpers/PrgLog.h"
+
+using namespace QtConnectionPool;
+
+void PoolConfigTest::initTestCase()
+{
+    qInstallMessageHandler(PrgLog::qtMessageOutput);
+}
 
 void PoolConfigTest::testDefaultValues()
 {
-    QString configFilePath = QCoreApplication::applicationDirPath() + "/../Tests/etc/empty_config.json";
-    PoolConfig poolConfig(configFilePath);
+    PoolConfig poolConfig(":configs/empty_config.json");
     DatabaseConfig dbConfig = poolConfig.dbConfig;
 
     QCOMPARE(poolConfig.checkInterval, 10000);
@@ -22,8 +29,7 @@ void PoolConfigTest::testDefaultValues()
 
 void PoolConfigTest::testIndividualValues()
 {
-    QString configFilePath = QCoreApplication::applicationDirPath() + "/../Tests/etc/individual_config.json";
-    PoolConfig poolConfig(configFilePath);
+    PoolConfig poolConfig(":configs/individual_config.json");
     DatabaseConfig dbConfig = poolConfig.dbConfig;
 
     QCOMPARE(poolConfig.checkInterval, 30000);

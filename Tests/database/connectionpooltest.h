@@ -4,16 +4,21 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-#include "database/databaseconnection.h"
-
 class ConnectionPoolTest : public QObject
 {
     Q_OBJECT
 
+public:
+    struct Handler;
+    Handler* _dataHandler;
+
 private slots:
     void initTestCase();
     void testGetConnection();
+    void testNoUnBorrow();
     void testAsynchronConnectionUsers();
+    void testCheckGetConnectionWithWait();
+    void testCheckConnectionPool();
     void cleanupTestCase();
 };
 

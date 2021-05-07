@@ -1,29 +1,35 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include "connectionprivate.h"
-#include "databaseconfig.h"
+#include <QSqlDatabase>
+#include <QSharedPointer>
 
-class Connection
-{
+namespace QtConnectionPool {
+    class ConnectionPrivate;
+    class DatabaseConfig;
 
-private:
-    ConnectionPrivate* databaseConnection;
+    class Connection
+    {
 
-public:
-    Connection();
-    Connection(const DatabaseConfig& config);
-    Connection(const Connection& other);
-    ~Connection();
+    private:
+        QSharedPointer<ConnectionPrivate> databaseConnection;
 
-    Connection& operator=(const Connection& other);
-    bool operator==(const Connection& other);
+    public:
+        Connection();
+        explicit Connection(const DatabaseConfig& config);
 
-    QSqlDatabase database();
-    void use();
-    bool isInUse() const;
-    qint64 getCreationTime() const;
-    void refresh();
-};
+        bool operator==(const Connection& other);
+
+        QSqlDatabase database();
+        void use();
+        bool isInUse() const;
+        bool isValid() const;
+
+        qint64 getCreationTime() const;
+        qint64 getLastUseTime() const;
+        void refresh();
+    };
+}
+
 
 #endif // CONNECTION_H
