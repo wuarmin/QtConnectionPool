@@ -2,25 +2,28 @@
 #include <QThread>
 
 #include "databaseconnectiontest.h"
-#include "database/connection.h"
 #include "database/poolconfig.h"
+#include "testHelpers/PrgLog.h"
+
+using namespace QtConnectionPool;
 
 DatabaseConnectionTest::DatabaseConnectionTest(QObject* parent) :
     QObject(parent)
 {
-    this->configFilePath = QCoreApplication::applicationDirPath() + "/../Tests/etc/test_db.json";
+    this->configFilePath = QCoreApplication::applicationDirPath() + "/etc/test_db.json";
 }
 
 void DatabaseConnectionTest::initTestCase()
 {
     PoolConfig poolConfig(this->configFilePath);
     this->connection = Connection(poolConfig.dbConfig);
+    qInstallMessageHandler(PrgLog::qtMessageOutput);
 }
 
 void DatabaseConnectionTest::testConnection()
 {
     QSqlQuery query(this->connection.database());
-    bool ok = query.exec("select 'it works'");
+    bool ok = query.exec("select 'it works' from dual");
     QCOMPARE(ok, true);
 
     query.next();

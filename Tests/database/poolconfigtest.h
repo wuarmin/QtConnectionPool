@@ -4,13 +4,12 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-#include "database/databaseconnection.h"
-
 class PoolConfigTest : public QObject
 {
     Q_OBJECT
 
 private slots:
+    void initTestCase();
     void testIndividualValues();
     void testDefaultValues();
 };

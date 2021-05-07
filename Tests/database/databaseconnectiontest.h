@@ -11,7 +11,7 @@ class DatabaseConnectionTest : public QObject
     Q_OBJECT
 private:
     QString configFilePath;
-    Connection connection;
+    QtConnectionPool::Connection connection;
 
 public:
     DatabaseConnectionTest(QObject* parent);

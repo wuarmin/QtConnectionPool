@@ -1,29 +1,58 @@
 #include "connectionpool.h"
 
-ConnectionPoolPrivate* ConnectionPool::pool = 0;
+#include <QDateTime>
+#include <QDebug>
+#include <QMutableListIterator>
+#include <QMutex>
+#include <QMutexLocker>
+#include <QObject>
+#include <QSharedPointer>
+#include <QThread>
+#include <QTimer>
 
-ConnectionPool::ConnectionPool(const QString& configFilePath)
-{
-    if (!pool) {
-        pool = new ConnectionPoolPrivate(configFilePath, 0);
+#include "poolconfig.h"
+#include "connection.h"
+#include "connectionpoolprivate.h"
+
+namespace QtConnectionPool {
+
+    ConnectionPoolPrivate* ConnectionPool::pool = 0;
+
+    ConnectionPool::ConnectionPool(const QString& configFilePath)
+    : ConnectionPool(PoolConfig(configFilePath))
+    {}
+
+    ConnectionPool::ConnectionPool(const PoolConfig &poolConfig) {
+        if (!pool) {
+            ConnectionPoolPrivate::setupPool(poolConfig, nullptr);
+            pool = &ConnectionPoolPrivate::getInstance();
+        } else {
+            qWarning("ConnectionPool: already initialized, skipping configuration");
+        }
     }
-}
 
-ConnectionPool::ConnectionPool()
-{
-    if (!pool) {
-        qFatal("ConnectionPool: pool was not initialized");
+
+    ConnectionPool::ConnectionPool() {
+        if (!pool) {
+            qFatal("ConnectionPool: pool was not initialized");
+        }
     }
-}
 
-void ConnectionPool::destroy()
-{
-    if (pool) {
-        delete pool;
+    void ConnectionPool::destroy() {
+        if (pool) {
+            pool->stop = true;
+            //delete pool;
+        }
     }
-}
 
-Connection ConnectionPool::getConnection()
-{
-    return pool->getConnection();
+    QSharedPointer<Connection> ConnectionPool::getConnection(uint64_t waitTimeoutInMs) {
+        return pool->getConnection(waitTimeoutInMs);
+    }
+    void ConnectionPool::unBorrowConnection(QSharedPointer<Connection> con) {
+        pool->unBorrowConnection(con);
+    }
+
+    PoolStats ConnectionPool::getPoolStats() const {
+        return pool->getPoolStats();
+    }
 }

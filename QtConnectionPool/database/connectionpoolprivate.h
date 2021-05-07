@@ -4,33 +4,42 @@
 #include <QObject>
 #include <QTimer>
 #include <QMutex>
+#include <QSharedPointer>
 
-#include "databaseconnection.h"
 #include "connection.h"
 #include "poolconfig.h"
+#include "poolStats.h"
 
-class ConnectionPoolPrivate : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(ConnectionPoolPrivate)
+namespace QtConnectionPool {
+    class ConnectionPoolPrivate : public QObject {
+        Q_OBJECT
+        Q_DISABLE_COPY(ConnectionPoolPrivate)
 
-private:
-    const PoolConfig config;
-    QTimer checkTimer;
-    QMutex mutex;
-    QList<Connection> connectionPool;
+    private:
+        PoolStats stat;
+        const PoolConfig config;
+        QTimer checkTimer;
+        mutable QMutex mutex;
+        QList<QSharedPointer<Connection>> connectionPool; //available
 
-public:
-    explicit ConnectionPoolPrivate(const PoolConfig &config, QObject *parent);
 
-    Connection getConnection();
+    public:
+        bool stop;
+        QSharedPointer<Connection> getConnection(uint64_t waitTimeoutInMs = 0);
+        void unBorrowConnection(QSharedPointer<Connection> con);
+        PoolStats getPoolStats() const;
 
-private:
-    void initPool();
-    Connection createNewConnection();
+        static ConnectionPoolPrivate& getInstance();
+        static void setupPool(const PoolConfig &config, QObject *parent);
 
-private slots:
-    void checkConnectionPool();
-};
+    private:
+        explicit ConnectionPoolPrivate(const PoolConfig &config, QObject *parent);
+        void initPool();
+        QSharedPointer<Connection> createNewConnection();
+
+    private slots:
+        void checkConnectionPool();
+    };
+}
 
 #endif // CONNECTIONPOOLPRIVATE_H
