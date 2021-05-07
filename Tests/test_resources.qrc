@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/"/>
+    <qresource prefix="/configs">
+        <file>empty_config.json</file>
+        <file>individual_config.json</file>
+        <file>test_db.json</file>
+    </qresource>
+</RCC>

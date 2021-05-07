@@ -4,6 +4,7 @@
 
 #include "asyncconnectionuser.h"
 #include "database/connectionpool.h"
+#include "helperfunctions.h"
 
 namespace QtConnectionPool {
     AsyncConnectionUser::AsyncConnectionUser(const QString& name, uint64_t waitTimeoutMS)
@@ -27,7 +28,8 @@ namespace QtConnectionPool {
         }
 
         QSqlQuery query(this->dbConnection->database());
-        this->success = query.exec("select 'it works' from dual");
+        const QString queryString = HelperFunctions::getTestSqlQueryForDriver(query.driver());
+        this->success = query.exec(queryString);
 
         query.next();
         QString queryResult = query.value(0).toString();

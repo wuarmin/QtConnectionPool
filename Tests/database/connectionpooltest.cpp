@@ -23,8 +23,7 @@ struct ConnectionPoolTest::Handler {
 void ConnectionPoolTest::initTestCase()
 {
     qInstallMessageHandler(PrgLog::qtMessageOutput);
-    QString configFilePath = QCoreApplication::applicationDirPath() + "/etc/test_db.json";
-    PoolConfig conf(configFilePath);
+    PoolConfig conf(":configs/test_db.json");
     conf.minConnections = 2; //force this to 2 for test
     conf.maxConnections = 5; //force this to 5 for test
     conf.connectionLifePeriod = 25000; //force this to 25s for test

@@ -11,8 +11,7 @@ void PoolConfigTest::initTestCase()
 
 void PoolConfigTest::testDefaultValues()
 {
-    QString configFilePath = QCoreApplication::applicationDirPath() + "/etc/empty_config.json";
-    PoolConfig poolConfig(configFilePath);
+    PoolConfig poolConfig(":configs/empty_config.json");
     DatabaseConfig dbConfig = poolConfig.dbConfig;
 
     QCOMPARE(poolConfig.checkInterval, 10000);
@@ -30,8 +29,7 @@ void PoolConfigTest::testDefaultValues()
 
 void PoolConfigTest::testIndividualValues()
 {
-    QString configFilePath = QCoreApplication::applicationDirPath() + "/etc/individual_config.json";
-    PoolConfig poolConfig(configFilePath);
+    PoolConfig poolConfig(":configs/individual_config.json");
     DatabaseConfig dbConfig = poolConfig.dbConfig;
 
     QCOMPARE(poolConfig.checkInterval, 30000);

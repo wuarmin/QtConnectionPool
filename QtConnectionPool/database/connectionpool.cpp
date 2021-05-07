@@ -1,5 +1,3 @@
-#include "connectionpool.h"
-
 #include <QDateTime>
 #include <QDebug>
 #include <QMutableListIterator>
@@ -10,6 +8,7 @@
 #include <QThread>
 #include <QTimer>
 
+#include "connectionpool.h"
 #include "poolconfig.h"
 #include "connection.h"
 #include "connectionpoolprivate.h"
@@ -48,6 +47,7 @@ namespace QtConnectionPool {
     QSharedPointer<Connection> ConnectionPool::getConnection(uint64_t waitTimeoutInMs) {
         return pool->getConnection(waitTimeoutInMs);
     }
+
     void ConnectionPool::unBorrowConnection(QSharedPointer<Connection> con) {
         pool->unBorrowConnection(con);
     }

@@ -13,13 +13,15 @@ HEADERS += \
     database/poolconfigtest.h \
     database/connectionpooltest.h \
     database/testHelpers/asyncconnectionuser.h \
-    database/testHelpers/PrgLog.h
+    database/testHelpers/PrgLog.h \
+    database/testHelpers/helperfunctions.h
 SOURCES += main.cpp \
     database/databaseconnectiontest.cpp \
     database/poolconfigtest.cpp \
     database/connectionpooltest.cpp \
     database/testHelpers/asyncconnectionuser.cpp \
-    database/testHelpers/PrgLog.cpp
+    database/testHelpers/PrgLog.cpp \
+    database/testHelpers/helperfunctions.cpp
 
 #include(../QtConnectionPool/qtconnectionpool.pro)
 
@@ -32,10 +34,7 @@ CONFIG += test_config
 test_config.files = $$files(etc/*.json)
 test_config.path = $$DESTDIR/etc
 
-DISTFILES += \
-    etc/empty_config.json \
-    etc/individual_config.json \
-    etc/test_db.json \
-    etc/connection_pool_test.json
+RESOURCES += \
+    test_resources.qrc
 
 
