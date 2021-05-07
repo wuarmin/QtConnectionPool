@@ -1,5 +1,4 @@
 #include <QSharedPointer>
-//#include <QApplication>
 
 #include "database/poolconfig.h"
 #include "database/connectionpool.h"
@@ -34,7 +33,7 @@ void ConnectionPoolTest::initTestCase()
 
 void ConnectionPoolTest::testGetConnection()
 {
-	//this expect test_db.json.maxCon = 5
+    //this expect test_db.json.maxCon = 5
     QSharedPointer<Connection> con1 = ConnectionPool().getConnection();
     QSharedPointer<Connection> con2 = ConnectionPool().getConnection();
     QSharedPointer<Connection> con3 = ConnectionPool().getConnection();
@@ -63,24 +62,35 @@ void ConnectionPoolTest::testGetConnection()
 void ConnectionPoolTest::testNoUnBorrow()
 {
     //this expect test_db.json.maxCon = 5
-    QSharedPointer<Connection> con1 = ConnectionPool().getConnection();
-    QSharedPointer<Connection> con2 = ConnectionPool().getConnection();
-    QSharedPointer<Connection> con3 = ConnectionPool().getConnection();
-    QSharedPointer<Connection> con4 = ConnectionPool().getConnection();
-    QSharedPointer<Connection> con5 = ConnectionPool().getConnection();
-    QSharedPointer<Connection> con6 = ConnectionPool().getConnection();
 
-    QList<QSharedPointer<Connection>> validConnections;
-    validConnections << con1 << con2 << con3 << con4 << con5;
-    QListIterator<QSharedPointer<Connection>> validConnectionsIterator(validConnections);
-    while (validConnectionsIterator.hasNext()) {
-        QSharedPointer<Connection> con = validConnectionsIterator.next();
-        QCOMPARE(con && con->isInUse(), true);
-        QCOMPARE(con && con->database().isOpen(), true);
+    { // scope of shared pointers
+        QSharedPointer<Connection> con1 = ConnectionPool().getConnection();
+        QSharedPointer<Connection> con2 = ConnectionPool().getConnection();
+        QSharedPointer<Connection> con3 = ConnectionPool().getConnection();
+        QSharedPointer<Connection> con4 = ConnectionPool().getConnection();
+        QSharedPointer<Connection> con5 = ConnectionPool().getConnection();
+        QSharedPointer<Connection> con6 = ConnectionPool().getConnection();
+
+        QList<QSharedPointer<Connection>> validConnections;
+        validConnections << con1 << con2 << con3 << con4 << con5;
+        QListIterator<QSharedPointer<Connection>> validConnectionsIterator(validConnections);
+        while (validConnectionsIterator.hasNext()) {
+            QSharedPointer<Connection> con = validConnectionsIterator.next();
+            QCOMPARE(con && con->isInUse(), true);
+            QCOMPARE(con && con->database().isOpen(), true);
+        }
+
+        PoolStats stats = ConnectionPool().getPoolStats();
+        QCOMPARE(stats._nbAvailable, 0);
+        QCOMPARE(stats._nbBorrowed, 5);
+
+        QCOMPARE(con6 && con6->isInUse(), false);
+        QCOMPARE(con6 && con6->database().isOpen(), false);
     }
 
-    QCOMPARE(con6 && con6->isInUse(), false);
-    QCOMPARE(con6 && con6->database().isOpen(), false);
+    PoolStats stats = ConnectionPool().getPoolStats();
+    QCOMPARE(stats._nbAvailable, 5);
+    QCOMPARE(stats._nbBorrowed, 0);
 }
 
 void ConnectionPoolTest::testAsynchronConnectionUsers()
