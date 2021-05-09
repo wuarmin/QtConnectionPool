@@ -15,7 +15,7 @@ namespace QtConnectionPool {
             //qDebug("Entering unBorrowDeleteHandler obj=%p", obj);
             ConnectionPoolPrivate& privatePoolInstance = ConnectionPoolPrivate::getInstance();
             if (!privatePoolInstance.stop) {
-                privatePoolInstance.unBorrowConnection(QSharedPointer<Connection>(obj));
+                privatePoolInstance.unBorrowConnection(QSharedPointer<Connection>(obj, unBorrowDeleteHandler));
             }
         }
     }
